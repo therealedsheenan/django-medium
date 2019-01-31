@@ -1,0 +1,17 @@
+{% extends 'layout/base.html' %}
+
+{% block body_block %}
+    <div class="container">
+        <div class="list-group m-4">
+            {% for post in post_list %}
+                <a href="{% url 'blog:post_detail' pk=post.pk %}" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ post.title }}</h5>
+                        <small>{{ post.published_date }}</small>
+                    </div>
+                    <small class="text-muted">Comments: {{ post.approved_comments.count }}</small>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
