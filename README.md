@@ -1,5 +1,5 @@
 # django-medium
-Medium clone
+Just another medium clone made with Django
 
 ## Installation
 Clone this repository on your local environment. 
