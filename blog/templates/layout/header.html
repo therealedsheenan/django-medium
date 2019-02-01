@@ -1,0 +1,37 @@
+<header id="header">
+    <div class="container">
+        <div id="logo" class="pull-left">
+            <h1>
+                <a href="#body" class="scrollto">D<span>Medium</span></a>
+            </h1>
+        </div>
+        <nav id="nav-menu-container">
+            <ul class="nav-menu">
+                <li>
+                    <a class="nav-link" href="{% url 'blog:post_list' %}">Home</a>
+                </li>
+                <li>
+                    <a class="nav-link" href="{% url 'blog:about' %}">About</a>
+                </li>
+                {% if user.is_authenticated %}
+                    <li>
+                        <a class="nav-link" href="{% url 'blog:post_draft_list' %}">Drafts</a>
+                    </li>
+                    <li>
+                        <a class="nav-link text-success" href="{% url 'blog:post_new' %}">Create post</a>
+                    </li>
+                    <li>
+                        <a class="nav-link text-danger" href="{% url 'logout' %}">Logout</a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a class="nav-link text-info" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li>
+                        <a class="nav-link text-success" href="{% url 'register' %}">Register</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</header>

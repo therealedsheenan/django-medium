@@ -5,47 +5,17 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <title>First App</title>
     <link rel="stylesheet" href="{% static "styles/bootstrap.css" %}">
+    <link rel="stylesheet" href="{% static "styles/font-awesome.min.css" %}">
+    <link rel="stylesheet" href="{% static "styles/theme.css" %}">
     <link rel="stylesheet" href="{% static "scripts/bootstrap.js" %}">
 </head>
 <body>
-    <nav class="border-bottom">
-        <h1 class="text-center">Medium</h1>
-        <ul class="nav justify-content-center">
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'blog:post_list' %}">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'blog:about' %}">About</a>
-            </li>
-            {% if user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'blog:post_draft_list' %}">Drafts</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-success" href="{% url 'blog:post_new' %}">Create post</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-danger" href="{% url 'logout' %}">Logout</a>
-                </li>
-            {% else %}
-                <li class="nav-item">
-                    <a class="nav-link text-info" href="{% url 'login' %}">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-success" href="{% url 'register' %}">Register</a>
-                </li>
-            {% endif %}
-{#            <li class="nav-item">#}
-{#                <a class="nav-link" href="{% url 'register' %}">Register</a>#}
-{#            </li>#}
-        </ul>
-    </nav>
-
+    {% include 'layout/header.html' %}
     {% block body_block %}
 
     {% endblock %}
+    {% include 'layout/footer.html' %}
 </body>
 </html>
