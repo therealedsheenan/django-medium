@@ -1,0 +1,45 @@
+{% extends 'layout/base.html' %}
+
+{% block body_block %}
+    <div class="container">
+        <div class="m-4">
+            <h1>{{ post.title }}</h1>
+
+            {% if post.published_date %}
+                <small class="text-muted">{{ post.published_date }}</small>
+            {% else %}
+                <a class="btn btn-primary" href="{% url 'blog:post_publish' pk=post.pk %}">Publish</a>
+            {% endif %}
+
+            {% if user.is_authenticated %}
+                <a class="btn btn-success" href="{% url 'blog:post_edit' pk=post.pk %}">Edit</a>
+                <a class="btn btn-danger" href="{% url 'blog:post_remove' pk=post.pk %}">Remove</a>
+            {% endif %}
+
+            <div class="content">
+                <p class='postcontent' >{{ post.text|safe|linebreaksbr }}</p>
+            </div>
+        </div>
+        <div class="post-comments">
+            <div class="mt-3">
+                {% for comment in post.comments.all %}
+                    {% if user.is_authenticated or comment.approved_comment %}
+                        <div class="border-top mt-3 pt-3">
+                            {{ comment.created_date }}
+                            {% if not comment.approved_comment %}
+                                <a class="btn btn-danger" href="{% url 'blog:comment_remove' pk=comment.pk %}">Remove</a>
+                                <a class="btn btn-success" href="{% url 'blog:comment_approve' pk=comment.pk %}">Approve</a>
+                            {% endif %}
+
+                            <p>{{ comment.text|safe|linebreaks }}</p>
+                            <p>Posted by: <strong>{{ comment.author }}</strong></p>
+                        </div>
+                    {% endif %}
+                {% empty %}
+                    <p>No comments posted.</p>
+                {% endfor %}
+                <a class="btn btn-primary" href="{% url 'blog:add_comment_to_post' pk=post.pk %}">Add comment</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -3,20 +3,16 @@ from blog.models import Comment, Post
 from django.contrib.auth.models import User
 
 
-class LoginForm(forms.ModelForm):
+class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
 
     class Meta():
         model = User
         fields = [
             'username',
+            'email',
             'password'
         ]
-
-        widgets = {
-            'username': forms.Select(attrs={'class': 'form-control'}),
-            'password': forms.TextInput(attrs={'class': 'form-control'})
-        }
 
 
 class PostForm(forms.ModelForm):
@@ -44,6 +40,6 @@ class CommentForm(forms.ModelForm):
         ]
 
         widgets = {
-            'author': forms.Select(attrs={'class': 'form-control'}),
-            'text': forms.TextInput(attrs={'class': 'form-control'})
+            'author': forms.TextInput(attrs={'class': 'form-control'}),
+            'text': forms.Textarea(attrs={'class': 'form-control'})
         }

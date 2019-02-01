@@ -34,7 +34,7 @@ class Comment(models.Model):
     approved_comment = models.BooleanField(default=False)
 
     def approve_comment(self):
-        self.approve_comment = True
+        self.approved_comment = True
         self.save()
 
     # redirect when instance is saved

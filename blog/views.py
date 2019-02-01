@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from blog.models import Post, Comment
-from blog.forms import PostForm, CommentForm
+from blog.forms import PostForm, CommentForm, UserRegistrationForm
 from django.contrib.auth import authenticate, login, logout
 from django.utils import timezone
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -21,6 +21,7 @@ class AboutView(TemplateView):
 
 
 class PostListView(ListView):
+    template_name = 'blog/post/list.html'
     model = Post
 
     def get_queryset(self):
@@ -28,12 +29,14 @@ class PostListView(ListView):
 
 
 class PostDetailView(DetailView):
+    template_name = 'blog/post/detail.html'
     model = Post
 
 
 class CreatePostView(LoginRequiredMixin, CreateView):
+    template_name = 'blog/post/form.html'
     login_url = '/login/'
-    redirect_field_name = 'blog/post_detail.html'
+    redirect_field_name = 'blog/post/detail.html'
 
     form_class = PostForm
     model = Post
@@ -53,6 +56,7 @@ class DeletePostView(LoginRequiredMixin, DeleteView):
 
 
 class DraftListView(LoginRequiredMixin, ListView):
+    template_name = 'blog/post/list.html'
     login_url = '/login/'
     redirect_field_name = 'blog/post_list.html'
     model = Post
@@ -67,10 +71,9 @@ class DraftListView(LoginRequiredMixin, ListView):
 def post_publish(request, pk):
     post = get_object_or_404(Post, pk=pk)
     post.publish_update()
-    return redirect('post_detail', pk=pk)
+    return redirect('blog:post_detail', pk=pk)
 
 
-@login_required()
 def add_comment_to_post(request, pk):
     post = get_object_or_404(Post, pk=pk)
 
@@ -78,10 +81,10 @@ def add_comment_to_post(request, pk):
         form = CommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
-            comment.post = Post
+            comment.post = post
             comment.save()
 
-            return redirect('post_detail', pk=post.pk)
+            return redirect('blog:post_detail', pk=post.pk)
     else:
         form = CommentForm()
     return render(request, 'blog/comment/form.html', {'form': form})
@@ -89,17 +92,17 @@ def add_comment_to_post(request, pk):
 
 @login_required()
 def comment_approve(request, pk):
-    comment = get_object_or_404(Comment, pk)
-    comment.approve()
-    return redirect('post_detail', pk=comment.post.pk)
+    comment = get_object_or_404(Comment, pk=pk)
+    comment.approve_comment()
+    return redirect('blog:post_detail', pk=comment.post.pk)
 
 
 @login_required()
 def comment_remove(request, pk):
-    comment = get_object_or_404(Comment, pk)
+    comment = get_object_or_404(Comment, pk=pk)
     post_pk = comment.post.pk
     comment.delete()
-    return redirect('post_detail', pk=post_pk)
+    return redirect('blog:post_detail', pk=post_pk)
 
 
 # Login
@@ -111,6 +114,21 @@ def user_logout(request):
     return redirect('/')
 
 
+def user_register(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(data=request.POST)
+
+        if form.is_valid():
+            user = form.save(commit=True)
+            user.set_password(user.password)
+            user.save()
+            return redirect('blog:post_list')
+    else:
+        form = UserRegistrationForm
+
+    return render(request, "registration/register.html", {'form': form})
+
+
 def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -120,6 +138,6 @@ def user_login(request):
 
         if user:
             login(request, user)
-            return redirect('/')
+            return redirect('blog:post_list')
     else:
         return render(request, "registration/login.html", {})
