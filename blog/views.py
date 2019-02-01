@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from blog.models import Post, Comment
 from blog.forms import PostForm, CommentForm
+from django.contrib.auth import authenticate, login, logout
 from django.utils import timezone
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import (
@@ -100,3 +101,25 @@ def comment_remove(request, pk):
     comment.delete()
     return redirect('post_detail', pk=post_pk)
 
+
+# Login
+
+
+@login_required
+def user_logout(request):
+    logout(request)
+    return redirect('/')
+
+
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(username=username, password=password)
+
+        if user:
+            login(request, user)
+            return redirect('/')
+    else:
+        return render(request, "registration/login.html", {})

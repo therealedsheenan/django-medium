@@ -2,9 +2,21 @@
 
 {% block body_block %}
     <div class="container">
-        <form method="POST" class="post-form">
+        <h3 class="text-center mt-4">New Post</h3>
+        <form method="POST" class="post-form col-md-6 offset-3">
             {% csrf_token %}
-            {{form.as_p}}
+            <div class="form-group">
+                <label>{{ form.author.label_tag }}</label>
+                {{ form.author }}
+            </div>
+            <div class="form-group">
+                <label>{{ form.title.label_tag }}</label>
+                {{ form.title }}
+            </div>
+            <div class="form-group">
+                <label>{{ form.text.label_tag }}</label>
+                {{ form.text }}
+            </div>
             <button type="submit" class="btn btn-primary">Save</button>
         </form>
     </div>
