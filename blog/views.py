@@ -1,6 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse_lazy
 from blog.models import Post, Comment
 from blog.forms import PostForm, CommentForm, UserRegistrationForm
 from django.contrib.auth import authenticate, login, logout
@@ -11,8 +10,7 @@ from django.views.generic import (
     ListView,
     DetailView,
     CreateView,
-    UpdateView,
-    DeleteView
+    UpdateView
 )
 
 
@@ -43,16 +41,12 @@ class CreatePostView(LoginRequiredMixin, CreateView):
 
 
 class UpdatePostView(LoginRequiredMixin, UpdateView):
+    template_name = 'blog/post/form.html'
     login_url = '/login/'
-    redirect_field_name = 'blog/post_detail.html'
+    redirect_field_name = 'blog/post/detail.html'
 
     form_class = PostForm
     model = Post
-
-
-class DeletePostView(LoginRequiredMixin, DeleteView):
-    model = Post
-    success_url = reverse_lazy('post_list')
 
 
 class DraftListView(LoginRequiredMixin, ListView):
@@ -63,6 +57,15 @@ class DraftListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Post.objects.filter(published_date__isnull=True)
+
+# Remove post
+
+
+@login_required()
+def post_remove(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    post.delete()
+    return redirect('blog:post_list')
 
 
 # COMMENTS
