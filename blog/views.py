@@ -58,9 +58,8 @@ class DraftListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Post.objects.filter(published_date__isnull=True)
 
+
 # Remove post
-
-
 @login_required()
 def post_remove(request, pk):
     post = get_object_or_404(Post, pk=pk)
@@ -68,8 +67,7 @@ def post_remove(request, pk):
     return redirect('blog:post_list')
 
 
-# COMMENTS
-
+# Comments
 @login_required()
 def post_publish(request, pk):
     post = get_object_or_404(Post, pk=pk)
@@ -108,9 +106,7 @@ def comment_remove(request, pk):
     return redirect('blog:post_detail', pk=post_pk)
 
 
-# Login
-
-
+# Login and Registration
 @login_required
 def user_logout(request):
     logout(request)
